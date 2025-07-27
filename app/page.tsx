@@ -349,17 +349,6 @@ export default function Home() {
             )}
           </div>
 
-          {/* Font preview */}
-          <div className="p-4 bg-gray-50 rounded-md">
-            <p className="text-sm text-gray-600 mb-2">Font preview:</p>
-            <p 
-              style={{ fontFamily: '"ImpressBT", Arial, sans-serif' }}
-              className="text-2xl"
-            >
-              Sample Text
-            </p>
-          </div>
-
           <button
             onClick={generateImage}
             disabled={!text.trim() || !fontsLoaded}
