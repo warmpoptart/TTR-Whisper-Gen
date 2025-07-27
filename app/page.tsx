@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 
 export default function Home() {
   const [text, setText] = useState('Sample Text');
@@ -46,7 +46,7 @@ export default function Home() {
     loadFonts();
   }, []);
 
-  const generateImage = () => {
+  const generateImage = useCallback(() => {
     if (!text.trim()) return;
 
     const canvas = canvasRef.current;
@@ -142,14 +142,14 @@ export default function Home() {
 
     // Convert to data URL
     setImageDataUrl(canvas.toDataURL());
-  };
+  }, [text, width, height, fontSize, backgroundColor]);
 
   // Auto-generate image when text, width, height, fontSize, or backgroundColor changes
   useEffect(() => {
     if (fontsLoaded) {
       generateImage();
     }
-  }, [text, width, height, fontSize, backgroundColor, fontsLoaded]);
+  }, [fontsLoaded, generateImage]);
 
   return (
     <div className="min-h-screen p-8 bg-gray-50">
@@ -362,14 +362,17 @@ export default function Home() {
           <div className="bg-white p-6 rounded-lg shadow-md">
             <h2 className="text-lg font-semibold text-gray-800 mb-2">Preview:</h2>
             <p className="text-sm text-gray-600 mb-4">
-              💡 <strong>To save:</strong> Right-click the image below and select "Save image as..."
+              💡 <strong>To save:</strong> Right-click the image below and select &quot;Save image as...&quot;
             </p>
             <div className="border border-gray-300 rounded-lg p-4 bg-gray-50">
-              <img
+              <Image
                 src={imageDataUrl}
                 alt="Generated text image"
+                width={width}
+                height={height}
                 className="max-w-full h-auto rounded-lg border-2 border-gray-300 mx-auto cursor-pointer hover:opacity-90 transition-opacity"
                 title="Right-click to save image"
+                unoptimized
               />
             </div>
           </div>
