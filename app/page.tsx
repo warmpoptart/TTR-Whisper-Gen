@@ -360,12 +360,16 @@ export default function Home() {
 
         {imageDataUrl && (
           <div className="bg-white p-6 rounded-lg shadow-md">
-            <h2 className="text-lg font-semibold text-gray-800 mb-4">Preview:</h2>
+            <h2 className="text-lg font-semibold text-gray-800 mb-2">Preview:</h2>
+            <p className="text-sm text-gray-600 mb-4">
+              💡 <strong>To save:</strong> Right-click the image below and select "Save image as..."
+            </p>
             <div className="border border-gray-300 rounded-lg p-4 bg-gray-50">
               <img
                 src={imageDataUrl}
                 alt="Generated text image"
-                className="max-w-full h-auto rounded-lg border-2 border-gray-300 mx-auto"
+                className="max-w-full h-auto rounded-lg border-2 border-gray-300 mx-auto cursor-pointer hover:opacity-90 transition-opacity"
+                title="Right-click to save image"
               />
             </div>
           </div>
