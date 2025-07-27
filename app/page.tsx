@@ -379,6 +379,13 @@ export default function Home() {
         )}
 
         <canvas ref={canvasRef} style={{ display: 'none' }} />
+        
+        {/* Footer */}
+        <footer className="text-center py-4">
+          <p className="text-sm text-gray-500">
+            made by Aton &gt;:)
+          </p>
+        </footer>
       </div>
     </div>
   );
