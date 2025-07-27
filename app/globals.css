@@ -1,5 +1,11 @@
 @import "tailwindcss";
 
+@font-face {
+  font-family: 'ImpressBT';
+  src: url('/ImpressBT.ttf') format('truetype');
+  font-display: swap;
+}
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
