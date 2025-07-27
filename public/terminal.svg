@@ -1,0 +1,19 @@
+<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Person's head silhouette -->
+  <circle cx="12" cy="12" r="6" fill="#4a5568" stroke="#2d3748" stroke-width="1"/>
+  
+  <!-- Mouth area -->
+  <ellipse cx="15" cy="14" rx="2" ry="1" fill="#2d3748"/>
+  
+  <!-- Hand gesture (finger to lips) -->
+  <rect x="16" y="12" width="1.5" height="4" rx="0.75" fill="#d69e2e"/>
+  <circle cx="16.75" cy="11.5" r="0.75" fill="#d69e2e"/>
+  
+  <!-- Whisper/sound waves -->
+  <path d="M20 10 Q22 12 20 14" stroke="#a0aec0" stroke-width="1.5" fill="none" opacity="0.7"/>
+  <path d="M22 8 Q25 12 22 16" stroke="#a0aec0" stroke-width="1.5" fill="none" opacity="0.5"/>
+  <path d="M24 6 Q28 12 24 18" stroke="#a0aec0" stroke-width="1.5" fill="none" opacity="0.3"/>
+  
+  <!-- Small "shh" text effect -->
+  <text x="19" y="20" font-family="serif" font-size="6" fill="#a0aec0" opacity="0.6" font-style="italic">shh</text>
+</svg>
