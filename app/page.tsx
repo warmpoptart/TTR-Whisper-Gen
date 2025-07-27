@@ -23,7 +23,7 @@ export default function Home() {
   const colorOptions = [
     { id: 'visit', name: 'Visit', color: '#8d4170' },
     { id: 'whisper', name: 'Whisper', color: '#2d6b8a' },
-    { id: 'emote', name: 'Emote', color: '#ff7f50' }, // orangeish color
+    { id: 'emote', name: 'Emote', color: '#a66528' },
     { id: 'system', name: 'System', color: '#b7b664' },
     { id: 'custom', name: 'Custom', color: customColor }
   ];
