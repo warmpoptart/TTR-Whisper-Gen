@@ -13,11 +13,15 @@ export default function Home() {
   const [backgroundColor, setBackgroundColor] = useState('#8d4170');
   const [selectedColorOption, setSelectedColorOption] = useState('visit');
   const [customColor, setCustomColor] = useState('#8d4170');
+  const [backgroundOpacity, setBackgroundOpacity] = useState(1);
+  const [textOpacity, setTextOpacity] = useState(1);
   const [isDarkMode, setIsDarkMode] = useState(true); // Default to dark mode
   // Separate display values for text inputs to allow temporary invalid states
   const [widthInput, setWidthInput] = useState('400');
   const [heightInput, setHeightInput] = useState('100');
   const [fontSizeInput, setFontSizeInput] = useState('48');
+  const [backgroundOpacityInput, setBackgroundOpacityInput] = useState('100');
+  const [textOpacityInput, setTextOpacityInput] = useState('100');
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   const colorOptions = [
@@ -47,7 +51,7 @@ export default function Home() {
     loadFonts();
   }, []);
 
-  const generateImage = useCallback(() => {
+  const generateImage = useCallback(async () => {
     if (!text.trim()) return;
 
     const canvas = canvasRef.current;
@@ -67,31 +71,47 @@ export default function Home() {
     // Define border radius
     const borderRadius = 15;
 
-    // Fill entire canvas with border color first (for the corners)
-    ctx.fillStyle = '#090407'; // Same as border color
+    // Fill with transparent background
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Convert hex color to RGB for alpha manipulation
+    const hexToRgb = (hex: string) => {
+      const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+      return result ? {
+        r: parseInt(result[1], 16),
+        g: parseInt(result[2], 16),
+        b: parseInt(result[3], 16)
+      } : null;
+    };
+
+    const bgColor = hexToRgb(backgroundColor);
+    if (!bgColor) return;
+
+    // Fill entire canvas with border color first (for the corners) with transparency
+    ctx.fillStyle = `rgba(9, 4, 7, ${backgroundOpacity})`;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // Draw the main rounded rectangle with background color
-    ctx.fillStyle = backgroundColor;
+    // Draw the main rounded rectangle with background color and transparency
+    ctx.fillStyle = `rgba(${bgColor.r}, ${bgColor.g}, ${bgColor.b}, ${backgroundOpacity})`;
     ctx.beginPath();
     ctx.roundRect(1.5, 1.5, canvas.width - 3, canvas.height - 3, borderRadius);
     ctx.fill();
 
-    // Add rounded rectangle border
-    ctx.strokeStyle = '#090407'; // Dark border color
+    // Add rounded rectangle border with transparency
+    ctx.strokeStyle = `rgba(9, 4, 7, ${backgroundOpacity})`;
     ctx.lineWidth = 3;
     ctx.beginPath();
     ctx.roundRect(1.5, 1.5, canvas.width - 3, canvas.height - 3, borderRadius);
     ctx.stroke();
 
-    // Set font and text properties
+    // Set font and text properties with transparency
     ctx.font = `${fontSize}px "ImpressBT", Arial, sans-serif`;
-    ctx.fillStyle = '#090407'; // Dark purple/black text
-    ctx.textAlign = 'center';
+    ctx.fillStyle = `rgba(9, 4, 7, ${textOpacity})`; // Dark purple/black text with transparency
+    ctx.textAlign = 'left';
     ctx.textBaseline = 'middle';
 
-    // Calculate text area with padding (4px left/right, 8px top/bottom)
-    const paddingX = 4;
+    // Calculate text area with padding (12px left/right, 8px top/bottom)
+    const paddingX = 12;
     const paddingY = 8;
     const textAreaWidth = canvas.width - (paddingX * 2);
     const textAreaHeight = canvas.height - (paddingY * 2);
@@ -138,12 +158,12 @@ export default function Home() {
     // Draw each line
     allLines.forEach((line, index) => {
       const yPosition = startY + (index * lineHeight);
-      ctx.fillText(line, canvas.width / 2, yPosition);
+      ctx.fillText(line, paddingX, yPosition);
     });
 
     // Convert to data URL
     setImageDataUrl(canvas.toDataURL());
-  }, [text, width, height, fontSize, backgroundColor]);
+  }, [text, width, height, fontSize, backgroundColor, backgroundOpacity, textOpacity]);
 
   // Auto-generate image when text, width, height, fontSize, or backgroundColor changes
   useEffect(() => {
@@ -415,6 +435,101 @@ export default function Home() {
                 />
               </div>
             )}
+          </div>
+
+
+
+          {/* Transparency controls */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label htmlFor="background-opacity" className={`block text-sm font-medium mb-2 ${
+                isDarkMode ? 'text-gray-300' : 'text-gray-700'
+              }`}>
+                Background Transparency (%):
+              </label>
+              <input
+                id="background-opacity-input"
+                type="text"
+                value={backgroundOpacityInput}
+                onChange={(e) => {
+                  setBackgroundOpacityInput(e.target.value);
+                  const value = parseInt(e.target.value);
+                  if (!isNaN(value) && value >= 0 && value <= 100) {
+                    setBackgroundOpacity(value / 100);
+                  }
+                }}
+                onBlur={() => {
+                  const value = parseInt(backgroundOpacityInput) || 100;
+                  const clampedValue = Math.max(0, Math.min(100, value));
+                  setBackgroundOpacity(clampedValue / 100);
+                  setBackgroundOpacityInput(clampedValue.toString());
+                }}
+                placeholder="100"
+                className={`w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors duration-300 ${
+                  isDarkMode 
+                    ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' 
+                    : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500'
+                }`}
+              />
+              <input
+                id="background-opacity"
+                type="range"
+                min="0"
+                max="100"
+                value={Math.round(backgroundOpacity * 100)}
+                onChange={(e) => {
+                  const value = parseInt(e.target.value);
+                  setBackgroundOpacity(value / 100);
+                  setBackgroundOpacityInput(value.toString());
+                }}
+                className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider mt-2"
+              />
+            </div>
+
+            <div>
+              <label htmlFor="text-opacity" className={`block text-sm font-medium mb-2 ${
+                isDarkMode ? 'text-gray-300' : 'text-gray-700'
+              }`}>
+                Text Transparency (%):
+              </label>
+              <input
+                id="text-opacity-input"
+                type="text"
+                value={textOpacityInput}
+                onChange={(e) => {
+                  setTextOpacityInput(e.target.value);
+                  const value = parseInt(e.target.value);
+                  if (!isNaN(value) && value >= 0 && value <= 100) {
+                    setTextOpacity(value / 100);
+                  }
+                }}
+                onBlur={() => {
+                  const value = parseInt(textOpacityInput) || 100;
+                  const clampedValue = Math.max(0, Math.min(100, value));
+                  setTextOpacity(clampedValue / 100);
+                  setTextOpacityInput(clampedValue.toString());
+                }}
+                placeholder="100"
+                className={`w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors duration-300 ${
+                  isDarkMode 
+                    ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' 
+                    : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500'
+                }`}
+              />
+              <input
+                id="text-opacity"
+                type="range"
+                min="0"
+                max="100"
+                value={Math.round(textOpacity * 100)}
+                onChange={(e) => {
+                  const value = parseInt(e.target.value);
+                  setTextOpacity(value / 100);
+                  setTextOpacityInput(value.toString());
+                }}
+                className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider mt-2"
+              />
+            </div>
           </div>
 
           <button
